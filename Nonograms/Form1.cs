@@ -15,6 +15,9 @@ namespace Nonograms
         public Form1()
         {
             InitializeComponent();
+            // w celach debugowania
+            var gm = new GameMaster();
+            gm.LoadBoardFromFile();
         }
     }
 }
