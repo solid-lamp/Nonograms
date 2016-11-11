@@ -9,7 +9,7 @@ namespace Nonograms
     /// <summary>
     /// Struktura paska
     /// </summary>
-    struct Line
+    public struct Line
     {
         public List<bool> Vector;
         /// <summary>
@@ -25,6 +25,5 @@ namespace Nonograms
             Vector = new List<bool>(new bool[length]);
             Placed = false;
         }
-      
     }
 }

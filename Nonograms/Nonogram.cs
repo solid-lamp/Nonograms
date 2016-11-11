@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
+using System.Windows.Forms.VisualStyles;
 
 namespace Nonograms
 {
-    internal class Nonogram
+    public class Nonogram
     {
         /// <summary>
         ///     Macierz przedstawiająca planszę:
@@ -10,29 +11,29 @@ namespace Nonograms
         ///     false - to miejsce jest na pewno puste (krzyżyk)
         ///     null - to miejsce jest puste
         /// </summary>
-        protected bool?[,] board;
+        public bool?[,] board;
 
         /// <summary>
         ///     Tablica, która przechowuje wektory, które z kolei trzymają w sobie ile odcinków jakich długości jest w danej
         ///     kolumnie
         /// </summary>
-        protected readonly List<Line>[] column;
+        public List<Line>[] column;
 
         /// <summary>
         ///     Wysokość planszy
         /// </summary>
-        protected readonly int height;
+        public int height;
 
         /// <summary>
         ///     Tablica, która przechowuje wektory, które z kolei trzymają w sobie ile odcinków jakich długości jest w danym
         ///     wierszu
         /// </summary>
-        private readonly List<Line>[] row;
+        public List<Line>[] row;
 
         /// <summary>
         ///     Szerokość planszy
         /// </summary>
-        private readonly int width;
+        public int width;
 
         /// <summary>
         ///     Tworzy pustą planszę
@@ -84,9 +85,75 @@ namespace Nonograms
             return true;
         }
 
-        public bool UpdateRow()
+        public bool UpdateRow(int index)
         {
-            return true;
+            int nElem = row[index].Count;
+            var LeftToRight = new int[width];
+            var RightToLeft = new int[width];
+            var counterltr = 0;
+            var counterrtl = width - 1;
+           
+            for (int i = 0 ; i < nElem ; i++)
+            {
+                var lewa = row[index][i].Vector.Count;
+                var prawa = row[index][nElem - i - 1].Vector.Count;
+                while (lewa--!=0)
+                {
+                    LeftToRight[counterltr++] = i+1;
+                }
+                counterltr++;
+                while (prawa-- != 0)
+                {
+                    RightToLeft[counterrtl--] = nElem - i;
+                }
+                counterrtl--;
+            }
+            var result = false;
+            for (int i = 0 ; i < width ; i++)
+            {
+                if (LeftToRight[i] == RightToLeft[i] && RightToLeft[i] != 0)
+                {
+                    board[index, i] = result = true;
+                }
+            }
+            return result;
+            //int nElem = row[index].Count;
+            //if (nElem < 1)
+            //    return false;
+            //int sLength = 0;
+            //int mLength = -1;
+            //for (int i = 0; i < nElem; i++)
+            //{
+            //    sLength += row[index][i].Vector.Count;
+            //    mLength = mLength < row[index][i].Vector.Count
+            //        ? row[index][i].Vector.Count
+            //        : mLength;
+            //}
+            //sLength += (nElem - 1);
+            //if (2*sLength > width && )
+
+        }
+        /// <summary>
+        /// Zwraca listę wolnych linii w wierszu
+        /// </summary>
+        /// <param name="index">indeks wiersza</param>
+        /// <returns>Lista wolnych miejsc</returns>
+        public List<Line> GetEmptyLinesInRow(int index)
+        {
+            var it = -1;
+            var prev_it = -1;
+            var list = new List<Line>();
+            while (++it < width)
+            {
+                if (board[index, it] != false)
+                    continue;
+                if (it - prev_it > 1)
+                    list.Add(new Line(it-prev_it-1));
+                prev_it = it;
+            }
+            if (it - prev_it > 1)
+                list.Add(new Line(it - prev_it - 1));
+            return list;
         }
     }
 }

@@ -4,12 +4,14 @@ using System.Windows.Forms;
 
 namespace Nonograms
 {
-    internal class GameMaster
+    public class GameMaster
     {
         /// <summary>
         ///     Główna plansza, na której będzie zaznaczane rozwiązanie.
         /// </summary>
-        private Nonogram origin;
+        public Nonogram origin;
+
+
 
         /// <summary>
         ///     Użytkownik wskazuje ścieżkę do pliku, którego zawartość program próbuje sparsować na początkową planszę

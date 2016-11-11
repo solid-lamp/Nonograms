@@ -18,6 +18,7 @@ namespace Nonograms
             // w celach debugowania
             var gm = new GameMaster();
             gm.LoadBoardFromFile();
+            //gm.origin.CheckRow()
         }
     }
 }

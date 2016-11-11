@@ -5,6 +5,8 @@ VisualStudioVersion = 14.0.25123.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nonograms", "Nonograms\Nonograms.csproj", "{EDF62D6A-80D4-4EB3-84E7-9F30EBFC922D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NonogramTests", "NonogramTests\NonogramTests.csproj", "{0E8826F8-4CBB-4FFB-BFCA-36BA0E4182DC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{EDF62D6A-80D4-4EB3-84E7-9F30EBFC922D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EDF62D6A-80D4-4EB3-84E7-9F30EBFC922D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EDF62D6A-80D4-4EB3-84E7-9F30EBFC922D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0E8826F8-4CBB-4FFB-BFCA-36BA0E4182DC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0E8826F8-4CBB-4FFB-BFCA-36BA0E4182DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0E8826F8-4CBB-4FFB-BFCA-36BA0E4182DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0E8826F8-4CBB-4FFB-BFCA-36BA0E4182DC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
