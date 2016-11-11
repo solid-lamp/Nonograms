@@ -55,6 +55,7 @@
     <Compile Include="GameMaster.cs" />
     <Compile Include="Line.cs" />
     <Compile Include="Nonogram.cs" />
+    <Compile Include="NonogramWorker.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">

@@ -1,55 +1,92 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+﻿using System.Collections.Generic;
 
 namespace Nonograms
 {
-    class Nonogram
+    internal class Nonogram
     {
         /// <summary>
-        /// Macierz przedstawiająca planszę:
+        ///     Macierz przedstawiająca planszę:
         ///     true - w tym miejscu jest czarne
         ///     false - to miejsce jest na pewno puste (krzyżyk)
         ///     null - to miejsce jest puste
         /// </summary>
-        private bool?[,] board;
+        protected bool?[,] board;
+
         /// <summary>
-        /// Wysokość planszy
+        ///     Tablica, która przechowuje wektory, które z kolei trzymają w sobie ile odcinków jakich długości jest w danej
+        ///     kolumnie
         /// </summary>
-        private int height;
+        protected readonly List<Line>[] column;
+
         /// <summary>
-        /// Szerokość planszy
+        ///     Wysokość planszy
         /// </summary>
-        private int width;
+        protected readonly int height;
+
         /// <summary>
-        /// Tablica, która przechowuje wektory, które z kolei trzymają w sobie ile odcinków jakich długości jest w danym wierszu
+        ///     Tablica, która przechowuje wektory, które z kolei trzymają w sobie ile odcinków jakich długości jest w danym
+        ///     wierszu
         /// </summary>
-        private List<Line>[] row;
+        private readonly List<Line>[] row;
+
         /// <summary>
-        /// Tablica, która przechowuje wektory, które z kolei trzymają w sobie ile odcinków jakich długości jest w danej kolumnie
+        ///     Szerokość planszy
         /// </summary>
-        private List<Line>[] column;
+        private readonly int width;
+
         /// <summary>
-        /// Tworzy pustą planszę
+        ///     Tworzy pustą planszę
         /// </summary>
         /// <param name="row"></param>
         /// <param name="column"></param>
         public Nonogram(List<Line>[] row, List<Line>[] column)
         {
-            if (row == null || column == null) return;
+            if ((row == null) || (column == null)) return;
             this.row = row;
             this.column = column;
             height = row.Length;
             width = column.Length;
-            board = new bool?[height,width];
+            board = new bool?[height, width];
+        }
+        public Nonogram(Nonogram n)
+        {
+            row = new List<Line>[height];
+            column = new List<Line>[width];
+            for (var i = 0 ; i < height ; i++)
+                row[i] = new List<Line>(n.row[i]);
+            for (var i = 0 ; i < width ; i++)
+                column[i] = new List<Line>(n.column[i]);
+            height = n.height;
+            width = n.width;
+            board = new bool?[height, width];
+            for (var i =0;i<width;++i)
+                for (var j = 0; j < height; ++j)
+                    board[i, j] = n.board[i, j];
+            
         }
 
         public override string ToString()
         {
             return $"Nonogram - board {height}x{width}";
+        }
+
+        public bool? CheckRow(int index)
+        {
+            if ((index <= 0) || (height <= index) || (row == null) || (column == null))
+                return null;
+
+
+            return true;
+        }
+
+        public bool IsValid()
+        {
+            return true;
+        }
+
+        public bool UpdateRow()
+        {
+            return true;
         }
     }
 }
