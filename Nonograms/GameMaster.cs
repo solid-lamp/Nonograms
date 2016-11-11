@@ -1,8 +1,6 @@
-﻿//#define PISZ
-using System;
+﻿#define PISZ
 using System.Collections.Generic;
 using System.IO;
-using System.Reflection;
 using System.Windows.Forms;
 
 namespace Nonograms
@@ -10,23 +8,26 @@ namespace Nonograms
     internal class GameMaster
     {
         /// <summary>
-        /// Główna plansza, na której będzie zaznaczane rozwiązanie.
+        ///     Główna plansza, na której będzie zaznaczane rozwiązanie.
         /// </summary>
         private Nonogram origin;
+
         /// <summary>
         ///     Użytkownik wskazuje ścieżkę do pliku, którego zawartość program próbuje sparsować na początkową planszę
         /// </summary>
         /// <returns>
         ///     Początkową planszę do rozwiązania, jeśli się udało wczytać prawidłowo planszę
-        ///     null w przeciwnym wypadku  
+        ///     null w przeciwnym wypadku
         /// </returns>
-        /// <remarks>Nazwa pliku
-        /// {height}x{width}x{paramHeight}x{paramWidth}
+        /// <remarks>
+        ///     Nazwa pliku
+        ///     {height}x{width}x{paramHeight}x{paramWidth}
+        ///     Rzuca wyjątkami
         /// </remarks>
         public void LoadBoardFromFile()
         {
             string path;
-            int height=0, width=0,paramHeight = 0, paramWidth = 0;
+            int height = 0, width = 0, paramHeight = 0, paramWidth = 0;
 
             using (var ofd = new OpenFileDialog())
             {
@@ -34,44 +35,27 @@ namespace Nonograms
                 ofd.FileName = string.Empty;
                 ofd.Filter = @"Text files (*.txt)|*.txt";
                 ofd.Multiselect = false;
-                if (ofd.ShowDialog() == DialogResult.OK)
-                {
-                    path = ofd.FileName;
-                    var boardsize = ofd.FileName.Split('\\');
-                    boardsize = boardsize[boardsize.Length - 1].Split('.');
-                    boardsize = boardsize[0].Split('x');
-                    try
-                    {
-                        height = int.Parse(boardsize[0]);
-                        width = int.Parse(boardsize[1]);
-                        paramHeight = int.Parse(boardsize[2]);
-                        paramWidth = int.Parse(boardsize[3]);
-                    }
-                    catch (Exception)
-                    {
-                        return;
-                    }
-                }
-                else return;
+                if (ofd.ShowDialog() != DialogResult.OK)
+                    return;
+                path = ofd.FileName;
+                var boardsize = ofd.FileName.Split('\\');
+                boardsize = boardsize[boardsize.Length - 1].Split('.');
+                boardsize = boardsize[0].Split('x');
+                height = int.Parse(boardsize[0]);
+                width = int.Parse(boardsize[1]);
+                paramHeight = int.Parse(boardsize[2]);
+                paramWidth = int.Parse(boardsize[3]);
             }
             string content;
             using (var sr = new StreamReader(path))
             {
-                try
-                {
-                    content = sr.ReadToEnd();
-                }
-                catch (Exception)
-                {
-                    return;
-                }
+                content = sr.ReadToEnd();
             }
             var row = new List<Line>[height];
             var column = new List<Line>[width];
-            int i;
-            for (i = 0; i < height; i++)
+            for (var i = 0; i < height; i++)
                 row[i] = new List<Line>();
-            for (i = 0 ; i < width ; i++)
+            for (var i = 0; i < width; i++)
                 column[i] = new List<Line>();
 
             if (content.Contains("\t"))
@@ -79,42 +63,48 @@ namespace Nonograms
                 var tmp = content.Split('\t');
                 content = tmp[1];
             }
-
-            var logs = content.Replace("\r\n", "");
+            var logs = content.Replace("\r\n", "x");
             var limit = paramHeight*width;
-            const char sep = ' ';
-#if PISZ
-            Console.WriteLine("Columnsy buduje z:\n");
-#endif
-            for (i = 0 ; i < limit ; ++i)
-            {
-#if PISZ
-                Console.Write(logs[i]);
-#endif
-                if(logs[i]!=sep)
-                    column[i%width].Add(new Line(int.Parse(logs[i].ToString())));
-#if PISZ
-                if (i % width == width-1)
-                    Console.WriteLine();
-#endif
-            }
+            const char empty = ' ';
+            const char sep = 'x';
+            var counter = 0; // do przechodzenia po stringu
+            var chars = "";
+            for (var i = 0; i < limit;)
+                switch (logs[counter])
+                {
+                    case empty:
+                        i++;
+                        goto case sep;
+                    case sep:
+                        counter++;
+                        break;
+                    default:
+                        chars = "";
+                        while (logs[counter] != sep)
+                            chars += logs[counter++];
+                        column[i++%width].Add(new Line(int.Parse(chars)));
+                        break;
+                }
+
             limit = paramWidth*height;
-#if PISZ
-            Console.WriteLine("Columnsy buduje z:\n");
-#endif
-            for ( int j=0 ; j < limit ; ++j)
-            {
-#if PISZ
-                Console.Write(logs[j+i]);
-#endif
-                if (logs[j+i] !=sep)
-                    row[j / paramWidth].Add(new Line(int.Parse(logs[j+i].ToString())));
-#if PISZ
-                if (j%paramWidth==paramWidth-1)
-                    Console.WriteLine();
-#endif
-            }
-            origin = new Nonogram(row,column);
-    }
+            for (var j = 0; j < limit;)
+                switch (logs[counter])
+                {
+                    case empty:
+                        j++;
+                        goto case sep;
+                    case sep:
+                        counter++;
+                        break;
+                    default:
+                        chars = "";
+                        while (logs[counter] != sep)
+                            chars += logs[counter++];
+                        row[j++/paramWidth].Add(new Line(int.Parse(chars)));
+                        break;
+                }
+
+            origin = new Nonogram(row, column);
+        }
     }
 }
