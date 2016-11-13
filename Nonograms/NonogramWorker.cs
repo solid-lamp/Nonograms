@@ -10,20 +10,20 @@ namespace Nonograms
     internal class NonogramWorker : Nonogram
     {
         private bool assume;
-        private int row;
-        private int column;
+        private int inRow;
+        private int inColumn;
         /// <summary>
         /// Tworzy kopie planszy, do metody rekurencyjnej
         /// Pamięta założoną wartość i gdzie była zakładana
         /// </summary>
         /// <param name="n">Plansza do skopiowania</param>
-        /// <param name="row">w którym wierszu</param>
-        /// <param name="column">w której kolumnie</param>
+        /// <param name="inRow">w którym wierszu</param>
+        /// <param name="inColumn">w której kolumnie</param>
         /// <param name="value">jaką wartość zakładamy</param>
-        public NonogramWorker(Nonogram n, int row, int column, bool value) : base(n)
+        public NonogramWorker(Nonogram n, int inRow, int inColumn, bool value) : base(n)
         {
-            this.row = row;
-            this.column = column;
+            this.inRow = inRow;
+            this.inColumn = inColumn;
             assume = value;
         }
         /// <summary>

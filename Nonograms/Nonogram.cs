@@ -1,4 +1,8 @@
 ﻿using System.Collections.Generic;
+using System.Data.Common;
+using System.Deployment.Application;
+using System.Net.NetworkInformation;
+using System.Runtime.Remoting.Messaging;
 using System.Windows.Forms.VisualStyles;
 
 namespace Nonograms
@@ -12,7 +16,14 @@ namespace Nonograms
         ///     null - to miejsce jest puste
         /// </summary>
         public bool?[,] board;
-
+        /// <summary>
+        /// Czy dana kolumna została już wpisana do końca
+        /// </summary>
+        public bool[] columns;
+        /// <summary>
+        /// Czy dany wiersz został już wpisany do końca
+        /// </summary>
+        public bool[] rows;
         /// <summary>
         ///     Tablica, która przechowuje wektory, które z kolei trzymają w sobie ile odcinków jakich długości jest w danej
         ///     kolumnie
@@ -48,6 +59,8 @@ namespace Nonograms
             height = row.Length;
             width = column.Length;
             board = new bool?[height, width];
+            columns = new bool[width];
+            rows = new bool[height];
         }
         public Nonogram(Nonogram n)
         {
@@ -92,7 +105,7 @@ namespace Nonograms
             var RightToLeft = new int[width];
             var counterltr = 0;
             var counterrtl = width - 1;
-           
+            var lines = GetEmptyLinesInRow(index);
             for (int i = 0 ; i < nElem ; i++)
             {
                 var lewa = row[index][i].Vector.Count;
@@ -117,43 +130,99 @@ namespace Nonograms
                 }
             }
             return result;
-            //int nElem = row[index].Count;
-            //if (nElem < 1)
-            //    return false;
-            //int sLength = 0;
-            //int mLength = -1;
-            //for (int i = 0; i < nElem; i++)
-            //{
-            //    sLength += row[index][i].Vector.Count;
-            //    mLength = mLength < row[index][i].Vector.Count
-            //        ? row[index][i].Vector.Count
-            //        : mLength;
-            //}
-            //sLength += (nElem - 1);
-            //if (2*sLength > width && )
+        }
+        public bool UpdateBorders()
+        {
+            var result = false;
+            // znaleźć pierwszy nullowaty element
+            // jesli jest on bezposrednio przy sciance to nic nie da rady zrobic
+            // jesli nad nim jest false to tez nie da rady
+            // jesli nad nim jest true to uaktualnic 
+            // wszystkie wpisane 'Placed' nad nim
+            // cofnac sie na sam poczatek lini ktora mamy dokonczyc
+            // dociagnac nastepna linie do konca 
+            // wpisac false o ile sie da
+            for (int i = 0 ; i < width ; i++)
+            {
+                // gora
+                for (int j = 0 ; j < height ; j++)
+                {
+                    if (board[j,i] != null)
+                        continue;
+                    if (j == 0)
+                        break;
+                    if (board[j - 1, i] == false)
+                        break;
+                    var tmp = 0;
+                    var vect = 0;
+                    for (; tmp < j; )
+                    {
+                        if (board[tmp, i] == true)
+                        {
+                            tmp += column[i][vect].Vector.Count;
+                            column[i][vect++] = new Line(column[i][vect].Vector.Count, true);
+                        }
+                        tmp++;
+                    }
+                    while (board[j, i] != false)
+                        j--;
+                    column[i][vect] = new Line(column[i][vect].Vector.Count, true);
+                    int k;
+                    for (k = 0 ; k < column[i][vect].Vector.Count ; k++)
+                    {
+                        board[j, i + k] = true;
+                    }
+                    if (k != height)
+                        board[j, i + k] = false;
+                    break;
+                }
+                // dol
 
+            }
+            for (int i = 0 ; i < height ; i++)
+            {
+                for (int j = 0 ; j < width ; j++)
+                {
+
+                }
+            }
+            return result;
         }
         /// <summary>
-        /// Zwraca listę wolnych linii w wierszu
+        /// Zwraca listę wektorów boolowskich wolnych albo nie zapełnionych linii w wierszu
         /// </summary>
         /// <param name="index">indeks wiersza</param>
         /// <returns>Lista wolnych miejsc</returns>
-        public List<Line> GetEmptyLinesInRow(int index)
+        public List<bool?[]> GetEmptyLinesInRow(int index)
         {
             var it = -1;
-            var prev_it = -1;
-            var list = new List<Line>();
-            while (++it < width)
+            var prevIt = -1;
+            var lines = new List<bool?[]>();
+            bool hitEmpty = false; // w pasku jest wolne miejsce
+            while (++it < width) 
             {
                 if (board[index, it] != false)
+                {
+                    if (board[index, it] == null)
+                        hitEmpty = true;
                     continue;
-                if (it - prev_it > 1)
-                    list.Add(new Line(it-prev_it-1));
-                prev_it = it;
+                }
+                if (it - prevIt > 1 && hitEmpty)
+                {
+                    hitEmpty = false;
+                    lines.Add(new bool?[(it - prevIt - 1)]);
+                    for (int i = it - prevIt - 2; i >= 0; --i)
+                        lines[lines.Count - 1][i] = board[index, prevIt + i+1];
+                }
+                prevIt = it;
             }
-            if (it - prev_it > 1)
-                list.Add(new Line(it - prev_it - 1));
-            return list;
+            if (it - prevIt > 1 && hitEmpty)
+            {
+                lines.Add(new bool?[(it - prevIt - 1)]);
+                for (int i = it - prevIt - 2 ; i >= 0 ; --i)
+                    lines[lines.Count - 1][i] = board[index, prevIt + i + 1];
+            }
+            return lines;
         }
     }
 }

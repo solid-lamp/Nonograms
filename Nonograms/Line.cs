@@ -15,15 +15,24 @@ namespace Nonograms
         /// <summary>
         /// Czy pasek został już umieszczony całkowicie
         /// </summary>
-        public bool Placed { get; set; }
+        public bool Placed;
         /// <summary>
-        /// Tworzy pasek o długości length i ustawia wartości kolejnych pól na false
+        /// Tworzy pasek o długości length i ustawia wartości kolejnych pól na false, chyba ze podano wartosc domyslna
         /// </summary>
         /// <param name="length">długość wektora</param>
-        public Line(int length)
+        public Line(int length, bool value= false)
         {
-            Vector = new List<bool>(new bool[length]);
-            Placed = false;
+            if (value == false)
+                Vector = new List<bool>(new bool[length]);
+            else
+            {
+                Vector = new List<bool>(length);
+                for (int i = 0 ; i < length ; i++)
+                {
+                    Vector[i] = true;
+                }
+            }
+            Placed = value;
         }
     }
 }
