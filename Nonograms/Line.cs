@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -27,12 +28,18 @@ namespace Nonograms
             else
             {
                 Vector = new List<bool>(length);
-                for (int i = 0 ; i < length ; i++)
+                for (var i = 0 ; i < length ; i++)
                 {
                     Vector[i] = true;
                 }
             }
             Placed = value;
+        }
+
+        public override string ToString()
+        {
+            string tmp = $"{Vector.Count}  ";
+            return Vector.Aggregate(tmp, (current, i) => current + (i == false ? "_" : "X"));
         }
     }
 }

@@ -1,20 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Nonograms
+﻿namespace Nonograms
 {
     internal class NonogramWorker : Nonogram
     {
         private bool assume;
-        private int inRow;
         private int inColumn;
+        private int inRow;
+
         /// <summary>
-        /// Tworzy kopie planszy, do metody rekurencyjnej
-        /// Pamięta założoną wartość i gdzie była zakładana
+        ///     Tworzy kopie planszy, do metody rekurencyjnej
+        ///     Pamięta założoną wartość i gdzie była zakładana
         /// </summary>
         /// <param name="n">Plansza do skopiowania</param>
         /// <param name="inRow">w którym wierszu</param>
@@ -26,8 +20,9 @@ namespace Nonograms
             this.inColumn = inColumn;
             assume = value;
         }
+
         /// <summary>
-        /// Metoda, która próbuje rozwiązać rekurencyjnie (maksymalnie 10 zejść)
+        ///     Metoda, która próbuje rozwiązać rekurencyjnie (maksymalnie 10 zejść)
         /// </summary>
         /// <returns>
         ///     true, jeżeli rozwiązano planszę
@@ -38,7 +33,6 @@ namespace Nonograms
         {
             return null;
         }
-
 
     }
 }
